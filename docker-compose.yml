@@ -1,13 +1,33 @@
+version: '3.8'
+
 services:
   nodecast-tv:
-    image: ghcr.io/technomancer702/nodecast-tv:latest
-    build: https://github.com/technomancer702/nodecast-tv.git#main
+    image: nodecast-tv:local
+    build: .
     container_name: nodecast-tv
+    restart: unless-stopped
+    dns:
+      - 192.168.37.8
+      - 192.168.37.9
     ports:
       - "3000:3000"
     volumes:
-      - ./data:/app/data
-    restart: unless-stopped
+      - /share/CACHEDEV1_DATA/Container/nodecast-tv/data:/app/data
+    devices:
+      - /dev/dri:/dev/dri # Required for Intel QuickSync (N5095)
+    shm_size: '1gb' # Optimized for transcoding buffers
+    deploy:
+      resources:
+        limits:
+          memory: 2G
     environment:
       - NODE_ENV=production
-      - PORT=3000 # Internal container port
+      - PORT=3000
+    networks:
+      qnet-static-eth1-2a77c7:
+        ipv4_address: 192.168.37.55
+
+networks:
+  qnet-static-eth1-2a77c7:
+    external:
+      name: qnet-static-eth1-2a77c7
