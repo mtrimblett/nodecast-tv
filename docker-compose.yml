@@ -3,14 +3,11 @@ version: '3.8'
 services:
   nodecast-tv:
     image: nodecast-tv:local
-    build: .
     container_name: nodecast-tv
     restart: unless-stopped
     dns:
       - 192.168.37.8
       - 192.168.37.9
-    ports:
-      - "3000:3000"
     volumes:
       - /share/CACHEDEV1_DATA/Container/nodecast-tv/data:/app/data
     devices:
